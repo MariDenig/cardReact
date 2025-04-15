@@ -1,79 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './MenuItem.css';
 
-const MenuItem = ({ name, description, price, imageUrl, onAddToCart, category, isVegetarian }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const formattedPrice = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(price);
-
-  const handleAddToCart = () => {
-    onAddToCart({ name, price, imageUrl });
-    // Feedback tátil para usuários com deficiência visual
-    const button = document.activeElement;
-    button.classList.add('clicked');
-    setTimeout(() => button.classList.remove('clicked'), 200);
+const MenuItem = ({ item, onAddToCart }) => {
+  const formatarPreco = (preco) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(preco);
   };
 
   return (
-    <article 
-      className="menu-item"
-      role="article"
-      aria-labelledby={`item-${name}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onFocus={() => setIsHovered(true)}
-      onBlur={() => setIsHovered(false)}
-    >
-      <div className="menu-item-image">
-        <img 
-          src={imageUrl} 
-          alt={`Imagem de ${name}`}
-          loading="lazy"
-          aria-hidden="true"
-        />
-        {isVegetarian && (
-          <span 
-            className="vegetarian-badge"
-            role="img"
-            aria-label="Opção vegetariana"
-          >
-            🌱
-          </span>
-        )}
+    <div className="menu-item">
+      <img 
+        src={item.imageUrl} 
+        alt={item.name}
+        className="menu-item-imagem"
+      />
+      <h3>{item.name}</h3>
+      <p>{item.description}</p>
+      <div className="menu-item-footer">
+        <span className="menu-item-preco">{formatarPreco(item.price)}</span>
+        <button 
+          className="add-to-cart-button"
+          onClick={() => onAddToCart(item)}
+          aria-label={`Adicionar ${item.name} ao carrinho`}
+        >
+          Adicionar ao Carrinho
+        </button>
       </div>
-      <div className="menu-item-content">
-        <div className="item-header">
-          <h3 id={`item-${name}`}>{name}</h3>
-          <span className="category-tag" aria-label={`Categoria: ${category}`}>
-            {category}
-          </span>
-        </div>
-        <p>{description}</p>
-        <div className="item-footer">
-          <span 
-            className="price" 
-            aria-label={`Preço: ${formattedPrice}`}
-          >
-            {formattedPrice}
-          </span>
-          <button
-            className="add-to-cart-button"
-            onClick={handleAddToCart}
-            aria-label={`Adicionar ${name} ao carrinho por ${formattedPrice}`}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                handleAddToCart();
-              }
-            }}
-          >
-            <span className="button-text">Adicionar ao Carrinho</span>
-            <span className="button-icon" aria-hidden="true">+</span>
-          </button>
-        </div>
-      </div>
-    </article>
+    </div>
   );
 };
 

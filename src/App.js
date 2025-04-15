@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useState } from 'react';
+import './styles.css';
 import MenuItem from './components/MenuItem';
 import { menuItems, categories } from './data';
 
@@ -7,14 +7,8 @@ function App() {
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [notification, setNotification] = useState(null);
-
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
 
   const filteredItems = selectedCategory === 'Todos' 
     ? menuItems 
@@ -57,80 +51,74 @@ function App() {
 
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const handleKeyDown = (e, action) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      action();
-    }
-  };
-
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Cardápio Digital</h1>
+        <button 
+          className="menu-button"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Abrir menu"
+        >
+          <span className="menu-icon">☰</span>
+        </button>
+        <h1>Nosso Cardápio</h1>
         <button
           className="cart-button"
           onClick={() => setIsCartOpen(!isCartOpen)}
-          onKeyDown={(e) => handleKeyDown(e, () => setIsCartOpen(!isCartOpen))}
-          aria-expanded={isCartOpen}
           aria-label={`Abrir carrinho de compras. ${cart.length} itens no carrinho`}
         >
-          <span className="cart-icon" aria-hidden="true">🛒</span>
+          <span className="cart-icon">🛒</span>
           <span className="cart-count">{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
         </button>
       </header>
 
       {notification && (
-        <div 
-          className={`notification ${notification.type}`}
-          role="alert"
-          aria-live="polite"
-        >
+        <div className={`notification ${notification.type}`}>
           {notification.message}
         </div>
       )}
 
-      <nav 
-        className="category-filter" 
-        role="navigation" 
-        aria-label="Filtro de categorias"
-      >
-        {categories.map(category => (
-          <button
-            key={category}
-            className={`category-button ${selectedCategory === category ? 'active' : ''}`}
-            onClick={() => setSelectedCategory(category)}
-            onKeyDown={(e) => handleKeyDown(e, () => setSelectedCategory(category))}
-            aria-pressed={selectedCategory === category}
+      <div className={`menu-sidebar ${isMenuOpen ? 'open' : ''}`}>
+        <div className="menu-header">
+          <h2 className="menu-title">Categorias</h2>
+          <button 
+            className="close-menu"
+            onClick={() => setIsMenuOpen(false)}
+            aria-label="Fechar menu"
           >
-            {category}
+            ×
           </button>
-        ))}
-      </nav>
+        </div>
+        <nav className="category-filter">
+          {categories.map(category => (
+            <button
+              key={category}
+              className={`category-button ${selectedCategory === category ? 'active' : ''}`}
+              onClick={() => {
+                setSelectedCategory(category);
+                setIsMenuOpen(false);
+              }}
+            >
+              {category}
+            </button>
+          ))}
+        </nav>
+      </div>
 
-      <main className="menu-container" role="main">
+      <main className="menu-container">
         {filteredItems.map((item) => (
           <MenuItem
             key={item.id}
-            name={item.name}
-            description={item.description}
-            price={item.price}
-            imageUrl={item.imageUrl}
-            category={item.category}
-            isVegetarian={item.isVegetarian}
+            item={item}
             onAddToCart={addToCart}
           />
         ))}
       </main>
 
       {isCartOpen && (
-        <div 
-          className="cart-modal" 
-          role="dialog" 
-          aria-labelledby="cart-title"
-          aria-modal="true"
-        >
+        <div className="cart-modal">
           <div className="cart-content">
-            <h2 id="cart-title">Carrinho de Compras</h2>
+            <h2>Carrinho de Compras</h2>
             {cart.length === 0 ? (
               <p>Seu carrinho está vazio</p>
             ) : (
@@ -149,20 +137,13 @@ function App() {
                       <div className="quantity-controls">
                         <button
                           onClick={() => updateQuantity(item.name, item.quantity - 1)}
-                          onKeyDown={(e) => handleKeyDown(e, () => updateQuantity(item.name, item.quantity - 1))}
                           aria-label={`Diminuir quantidade de ${item.name}`}
                         >
                           -
                         </button>
-                        <span 
-                          className="quantity"
-                          aria-label={`Quantidade: ${item.quantity}`}
-                        >
-                          {item.quantity}
-                        </span>
+                        <span className="quantity">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.name, item.quantity + 1)}
-                          onKeyDown={(e) => handleKeyDown(e, () => updateQuantity(item.name, item.quantity + 1))}
                           aria-label={`Aumentar quantidade de ${item.name}`}
                         >
                           +
@@ -177,7 +158,6 @@ function App() {
                         </span>
                         <button
                           onClick={() => removeFromCart(item.name)}
-                          onKeyDown={(e) => handleKeyDown(e, () => removeFromCart(item.name))}
                           className="remove-item"
                           aria-label={`Remover ${item.name} do carrinho`}
                         >
@@ -196,10 +176,7 @@ function App() {
                     }).format(total)}
                   </span>
                 </div>
-                <button 
-                  className="checkout-button"
-                  onKeyDown={(e) => handleKeyDown(e, () => alert('Compra finalizada!'))}
-                >
+                <button className="checkout-button">
                   Finalizar Compra
                 </button>
               </>
@@ -207,7 +184,6 @@ function App() {
             <button
               className="close-cart"
               onClick={() => setIsCartOpen(false)}
-              onKeyDown={(e) => handleKeyDown(e, () => setIsCartOpen(false))}
               aria-label="Fechar carrinho"
             >
               ×
