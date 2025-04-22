@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css';
 import MenuItem from './components/MenuItem';
 import { menuItems, categories } from './data';
@@ -26,18 +26,12 @@ function App() {
       }
       return [...prevCart, { ...item, quantity: 1 }];
     });
-    setNotification({
-      message: `${item.name} adicionado ao carrinho`,
-      type: 'success'
-    });
+    showNotification(`${item.name} adicionado ao carrinho`, 'success');
   };
 
   const removeFromCart = (itemName) => {
     setCart(prevCart => prevCart.filter(item => item.name !== itemName));
-    setNotification({
-      message: `${itemName} removido do carrinho`,
-      type: 'info'
-    });
+    showNotification(`${itemName} removido do carrinho`, 'info');
   };
 
   const updateQuantity = (itemName, newQuantity) => {
@@ -47,6 +41,13 @@ function App() {
         item.name === itemName ? { ...item, quantity: newQuantity } : item
       )
     );
+  };
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 2000);
   };
 
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -74,6 +75,9 @@ function App() {
 
       {notification && (
         <div className={`notification ${notification.type}`}>
+          <span className="notification-icon">
+            {notification.type === 'success' ? '✓' : notification.type === 'info' ? 'ℹ' : '⚠'}
+          </span>
           {notification.message}
         </div>
       )}
