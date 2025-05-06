@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 export const menuItems = [
   {
     id: 1,
@@ -7,7 +9,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Pratos Principais",
     isVegetarian: true,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 2,
@@ -17,7 +20,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Pratos Principais",
     isVegetarian: false,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 3,
@@ -27,7 +31,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Pratos Principais",
     isVegetarian: false,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 4,
@@ -37,7 +42,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Sobremesas",
     isVegetarian: true,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 5,
@@ -47,7 +53,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Sobremesas",
     isVegetarian: true,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 6,
@@ -57,7 +64,8 @@ export const menuItems = [
     imageUrl: "https://claudia.abril.com.br/wp-content/uploads/2020/02/mousse-de-chocolate-branco.jpg?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Sobremesas",
     isVegetarian: true,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 7,
@@ -67,7 +75,8 @@ export const menuItems = [
     imageUrl: "https://viverbem.unimed.coop.br/wp-content/uploads/2024/11/7c9298bb-bf32-4661-8f48-8a32ebb87361.jpeg?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Bebidas",
     isVegetarian: true,
-    isVegan: true
+    isVegan: true,
+    loading: lazy, 
   },
   {
     id: 8,
@@ -77,7 +86,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Bebidas",
     isVegetarian: true,
-    isVegan: true
+    isVegan: true,
+    loading: lazy, 
   },
   {
     id: 9,
@@ -87,7 +97,8 @@ export const menuItems = [
     imageUrl: "https://mambodelivery.vtexassets.com/arquivos/ids/184965-800-450?v=637884009070200000&width=500&height=300&aspect=true&format=webp",
     category: "Bebidas",
     isVegetarian: true,
-    isVegan: true
+    isVegan: true,
+    loading: lazy, 
   },
   {
     id: 10,
@@ -97,7 +108,8 @@ export const menuItems = [
     imageUrl: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Sushi",
     isVegetarian: false,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 11,
@@ -107,7 +119,8 @@ export const menuItems = [
     imageUrl: "https://static.itdg.com.br/images/1200-675/774375583e3775acf3328a7c7a0a0470/303152-original.jpg?w=500&auto=format&fit=crop&q=60&format=webp",
     category: "Sushi",
     isVegetarian: false,
-    isVegan: false
+    isVegan: false,
+    loading: lazy, 
   },
   {
     id: 12,
@@ -117,7 +130,8 @@ export const menuItems = [
     imageUrl: "https://www.kikkoman.pt/fileadmin/_processed_/8/3/csm_944-recipe-page-vegetarian-gunkan-maki-sushi-with-avocado-apple_desktop_6d6aed5ff8.webp?w=500&auto=format&fit=crop&q=60",
     category: "Sushi",
     isVegetarian: true,
-    isVegan: true
+    isVegan: true,
+    loading: lazy, 
   }
 ];
 

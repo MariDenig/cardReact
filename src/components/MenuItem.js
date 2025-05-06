@@ -16,6 +16,9 @@ const MenuItem = ({ item, onAddToCart }) => {
         alt={item.name} 
         className="menu-item-imagem"
         loading="lazy"
+        width="500"
+        height="300"
+        decoding="async"
       />
       <div className="menu-item-content">
         <div className="menu-item-header">
