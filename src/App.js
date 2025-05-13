@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import './styles.css';
 import MenuItem from './components/MenuItem';
 import { menuItems, categories } from './data';
 
+// Lazy loading do componente ItemDetails
+// Implementação de Code Splitting:
+// O componente ItemDetails é carregado dinamicamente apenas quando necessário,
+// reduzindo o tamanho do bundle inicial e melhorando o tempo de carregamento da página.
+// O React.lazy() cria um chunk separado que será carregado sob demanda.
+// O Suspense fornece um fallback enquanto o componente está carregando.
+const ItemDetails = lazy(() => import('./components/ItemDetails'));
+
 function App() {
   const [cart, setCart] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -118,6 +127,22 @@ function App() {
           />
         ))}
       </main>
+
+      {selectedItem && (
+        <div className="modal">
+          <div className="modal-content">
+            <button 
+              className="close-button"
+              onClick={() => setSelectedItem(null)}
+            >
+              ×
+            </button>
+            <Suspense fallback={<div>Carregando detalhes...</div>}>
+              <ItemDetails item={selectedItem} />
+            </Suspense>
+          </div>
+        </div>
+      )}
 
       {isCartOpen && (
         <div className="cart-modal">
