@@ -1,17 +1,19 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useCallback, useMemo } from 'react';
 import './styles.css';
 import MenuItem from './components/MenuItem';
 import { menuItems, categories } from './data';
 
-// Lazy loading do componente ItemDetails
-// Implementação de Code Splitting:
-// O componente ItemDetails é carregado dinamicamente apenas quando necessário,
-// reduzindo o tamanho do bundle inicial e melhorando o tempo de carregamento da página.
-// O React.lazy() cria um chunk separado que será carregado sob demanda.
-// O Suspense fornece um fallback enquanto o componente está carregando.
+// Lazy loading com prefetch
 const ItemDetails = lazy(() => import('./components/ItemDetails'));
 const CartModal = lazy(() => import('./components/CartModal'));
 const MenuSidebar = lazy(() => import('./components/MenuSidebar'));
+
+// Componente de loading otimizado
+const LoadingFallback = () => (
+  <div className="loading-fallback">
+    <div className="loading-spinner"></div>
+  </div>
+);
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -21,11 +23,16 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  const filteredItems = selectedCategory === 'Todos' 
-    ? menuItems 
-    : menuItems.filter(item => item.category === selectedCategory);
+  // Memoize filtered items
+  const filteredItems = useMemo(() => 
+    selectedCategory === 'Todos' 
+      ? menuItems 
+      : menuItems.filter(item => item.category === selectedCategory),
+    [selectedCategory]
+  );
 
-  const addToCart = (item) => {
+  // Memoize callbacks
+  const addToCart = useCallback((item) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(cartItem => cartItem.name === item.name);
       if (existingItem) {
@@ -38,30 +45,40 @@ function App() {
       return [...prevCart, { ...item, quantity: 1 }];
     });
     showNotification(`${item.name} adicionado ao carrinho`, 'success');
-  };
+  }, []);
 
-  const removeFromCart = (itemName) => {
+  const removeFromCart = useCallback((itemName) => {
     setCart(prevCart => prevCart.filter(item => item.name !== itemName));
     showNotification(`${itemName} removido do carrinho`, 'info');
-  };
+  }, []);
 
-  const updateQuantity = (itemName, newQuantity) => {
+  const updateQuantity = useCallback((itemName, newQuantity) => {
     if (newQuantity < 1) return;
     setCart(prevCart =>
       prevCart.map(item =>
         item.name === itemName ? { ...item, quantity: newQuantity } : item
       )
     );
-  };
+  }, []);
 
-  const showNotification = (message, type) => {
+  const showNotification = useCallback((message, type) => {
     setNotification({ message, type });
     setTimeout(() => {
       setNotification(null);
     }, 2000);
-  };
+  }, []);
 
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  // Memoize total calculation
+  const total = useMemo(() => 
+    cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+    [cart]
+  );
+
+  // Memoize cart count
+  const cartCount = useMemo(() => 
+    cart.reduce((sum, item) => sum + item.quantity, 0),
+    [cart]
+  );
 
   return (
     <div className="App">
@@ -77,10 +94,10 @@ function App() {
         <button
           className="cart-button"
           onClick={() => setIsCartOpen(!isCartOpen)}
-          aria-label={`Abrir carrinho de compras. ${cart.length} itens no carrinho`}
+          aria-label={`Abrir carrinho de compras. ${cartCount} itens no carrinho`}
         >
           <span className="cart-icon">🛒</span>
-          <span className="cart-count">{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>
+          <span className="cart-count">{cartCount}</span>
         </button>
       </header>
 
@@ -93,7 +110,7 @@ function App() {
         </div>
       )}
 
-      <Suspense fallback={<div>Carregando menu...</div>}>
+      <Suspense fallback={<LoadingFallback />}>
         {isMenuOpen && (
           <MenuSidebar
             categories={categories}
@@ -105,11 +122,12 @@ function App() {
       </Suspense>
 
       <main className="menu-container">
-        {filteredItems.map((item) => (
+        {filteredItems.map((item, index) => (
           <MenuItem
             key={item.id}
             item={item}
             onAddToCart={addToCart}
+            isFirstItem={index === 0}
           />
         ))}
       </main>
@@ -123,14 +141,14 @@ function App() {
             >
               ×
             </button>
-            <Suspense fallback={<div>Carregando detalhes...</div>}>
+            <Suspense fallback={<LoadingFallback />}>
               <ItemDetails item={selectedItem} />
             </Suspense>
           </div>
         </div>
       )}
 
-      <Suspense fallback={<div>Carregando carrinho...</div>}>
+      <Suspense fallback={<LoadingFallback />}>
         {isCartOpen && (
           <CartModal
             cart={cart}
@@ -145,4 +163,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

@@ -3,14 +3,15 @@
   border-radius: 15px;
   overflow: hidden;
   box-shadow: var(--shadow);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.menu-item:hover, .menu-item:focus-within {
+.menu-item:hover,
+.menu-item:focus-within {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -34,6 +35,18 @@
   transform: scale(1.1);
 }
 
+.menu-item-imagem {
+  width: 100%;
+  aspect-ratio: 5/3;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.menu-item:hover .menu-item-imagem {
+  transform: scale(1.1);
+}
+
 .vegetarian-badge {
   position: absolute;
   top: 10px;
@@ -52,27 +65,31 @@
   flex-grow: 1;
 }
 
-.item-header {
+.menu-item-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 10px;
 }
 
-.item-header h3 {
+.menu-item-header h3 {
   color: var(--primary-dark);
   font-size: 1.2rem;
   margin: 0;
   flex: 1;
 }
 
-.category-tag {
-  background-color: var(--primary-light);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  margin-left: 10px;
+.dietary-tags {
+  display: flex;
+  gap: 5px;
+}
+
+.dietary-tag {
+  font-size: 1.2rem;
+  padding: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .menu-item-content p {
@@ -83,14 +100,14 @@
   flex-grow: 1;
 }
 
-.item-footer {
+.menu-item-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
 }
 
-.price {
+.menu-item-preco {
   font-size: 1.2rem;
   font-weight: bold;
   color: var(--primary-color);
@@ -138,16 +155,11 @@
     padding: 15px;
   }
 
-  .item-header h3 {
+  .menu-item-header h3 {
     font-size: 1.1rem;
   }
 
-  .category-tag {
-    font-size: 0.7rem;
-    padding: 3px 6px;
-  }
-
-  .price {
+  .menu-item-preco {
     font-size: 1.1rem;
   }
 
@@ -174,7 +186,7 @@
     padding: 12px;
   }
 
-  .item-header h3 {
+  .menu-item-header h3 {
     font-size: 1rem;
   }
 

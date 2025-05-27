@@ -1,24 +1,31 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import './MenuItem.css';
 
-const MenuItem = ({ item, onAddToCart }) => {
-  const formatarPreco = (preco) => {
+const MenuItem = React.memo(({ item, onAddToCart, isFirstItem }) => {
+  const formatarPreco = useCallback((preco) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(preco);
-  };
+  }, []);
+
+  const handleAddToCart = useCallback(() => {
+    onAddToCart(item);
+  }, [onAddToCart, item]);
 
   return (
     <div className="menu-item">
       <img 
         src={item.imageUrl} 
-        alt={item.name} 
+        alt={`Foto apetitosa de ${item.name}, mostrando ${item.descricaoBreveDaImagem || item.name}`}
         className="menu-item-imagem"
-        loading="lazy"
+        loading={isFirstItem ? "eager" : "lazy"}
         width="500"
         height="300"
-        decoding="async"
+        decoding={isFirstItem ? "sync" : "async"}
+        srcSet={item.imageUrl.replace('w=500', 'w=300') + ' 300w, ' + item.imageUrl.replace('w=500', 'w=500') + ' 500w'}
+        sizes="(max-width: 600px) 100vw, 500px"
+        fetchpriority={isFirstItem ? "high" : "auto"}
       />
       <div className="menu-item-content">
         <div className="menu-item-header">
@@ -41,7 +48,7 @@ const MenuItem = ({ item, onAddToCart }) => {
           <span className="menu-item-preco">{formatarPreco(item.price)}</span>
           <button
             className="add-to-cart-button"
-            onClick={() => onAddToCart(item)}
+            onClick={handleAddToCart}
             aria-label={`Adicionar ${item.name} ao carrinho`}
           >
             <span className="cart-icon">🛒</span>
@@ -51,6 +58,8 @@ const MenuItem = ({ item, onAddToCart }) => {
       </div>
     </div>
   );
-};
+});
+
+MenuItem.displayName = 'MenuItem';
 
 export default MenuItem; 
